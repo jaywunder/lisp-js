@@ -72,7 +72,7 @@ function expressionize(code, i) {
 
       var arr = [];
       while(code[++i] !== ']') {
-        arr.push(token);
+        arr.push(code[i]);
       }
       expr.push(literal, arr);
 
@@ -81,17 +81,18 @@ function expressionize(code, i) {
       if (DEBUG) console.log('found \' or "');
       var str = '';
       while(!code[++i].match(/^['"]/)) {
-        if (DEBUG) console.log(token);
-        str = str + ' ' + token;
+        if (DEBUG) console.log(code[i]);
+        str = str + ' ' + code[i];
       }
       str = str.slice(1, str.length);
       expr.push(literal, str);
 
     } else if (token.match(/^-?\d*\.?\d*$/)) {
 
-      expr.push(token + 0);
+      expr.push(parseInt(token));
 
-    } else {
+    }
+    else {
 
       if (DEBUG) console.log('found : ' + token);
       expr.push(token);
