@@ -33,59 +33,70 @@ function tokenize(codeString) {
   return splitStream;
 }
 
+/**
+ * Turns the gramar into a tree
+ *
+ * @param
+ * @returns
+ */
 function expressionize(code, i) {
   let returnIndex = !!i;
 
   let expr = [];
-  for (i = i || 0; i < code.length; i++) switch (code[i]) {
-    case '(':
+  for (i = i || 0; i < code.length; i++) {
+    let token = code[i];
+
+    if (token === '(') {
       if (DEBUG) console.log('found open paren');
       var newExpr;
       [newExpr, i] = expressionize(code, i + 1);
-
       expr.push(newExpr);
-      break;
-    case ')':
+
+    } else if (token === ')') {
+
       if (returnIndex)
         return [expr, i];
       else
         return expr;
-      break;
 
-    case '{':
+    } else if (token === '{') {
+
       if (DEBUG) console.log('found start of object');
       var obj = {};
       while(code[++i] !== '}') {
-        obj[code[i]] = code[++i];
+        obj[token] = code[++i];
       }
-
       expr.push(literal, obj);
-      break;
 
-    case '[':
+    } else if (token === '[') {
+
       var arr = [];
       while(code[++i] !== ']') {
-        arr.push(code[i]);
+        arr.push(token);
       }
-
       expr.push(literal, arr);
-      break;
 
-    case '\'': case '"':
+    } else if (token === '"' || token  === '\'') {
+
       if (DEBUG) console.log('found \' or "');
       var str = '';
       while(!code[++i].match(/^['"]/)) {
-        if (DEBUG) console.log(code[i]);
-        str = str + ' ' + code[i];
+        if (DEBUG) console.log(token);
+        str = str + ' ' + token;
       }
       str = str.slice(1, str.length);
-
       expr.push(literal, str);
-      break;
 
-    default:
-      if (DEBUG) console.log('found token: ' + code[i]);
-      expr.push(code[i]);
+    } else if (token.match(/^-?\d*\.?\d*$/)) {
+
+      expr.push(token + 0);
+
+    } else {
+
+      if (DEBUG) console.log('found : ' + token);
+      expr.push(token);
+
+    }
   }
   return expr;
 }
