@@ -132,7 +132,7 @@ function plusOne(...args) {
 function __if__(...args) {
   if (this.eval(args[0])) {
     this.eval(args[1]);
-  } else if (args[2] == 'elif' || args[2] == 'else') {
+  } else if (args[2] == 'if' || args[2] == 'elif' || args[2] == 'else') {
     this.run(this, args.splice(2, args.length));
   }
 

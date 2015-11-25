@@ -1,7 +1,7 @@
 (if (== 1 2)
-  ()
-elif (== 1 2)
-  (print '1 != 2, but 1 == 1 yay!')
+  (print 'this will never run')
+if (== 1 2)
+  (print 'this wont run either')
 else
   (print '1 != 2, but 1 == 1 yay!')
 )
