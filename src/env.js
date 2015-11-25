@@ -130,9 +130,7 @@ function plusOne(...args) {
 }
 
 function __if__(...args) {
-  console.log('testing: ' + args[0]);
   if (this.eval(args[0])) {
-    console.log('running: ' + args[1]);
     this.eval(args[1]);
   }
 }
@@ -146,19 +144,31 @@ function __elif__(...args) {
 }
 
 function gt(...args) {
-
+  for (let i = 1; i < args.length; i++) {
+    if (args[i-1] <= args[i]) return false;
+  }
+  return true;
 }
 
 function lt(...args) {
-
+  for (let i = 1; i < args.length; i++) {
+    if (args[i-1] >= args[i]) return false;
+  }
+  return true;
 }
 
 function ge(...args) {
-
+  for (let i = 1; i < args.length; i++) {
+    if (args[i-1] < args[i]) return false;
+  }
+  return true;
 }
 
 function le(...args) {
-
+  for (let i = 1; i < args.length; i++) {
+    if (args[i-1] > args[i]) return false;
+  }
+  return true;
 }
 
 function eq(...args) {
@@ -178,17 +188,23 @@ function ne(...args) {
 }
 
 function and(...args) {
-
+  for (let i = 0; i < args.length; i++) {
+    if (!this.eval(args[i])) return false;
+  }
+  return true;
 }
 
 function or(...args) {
-
+  for (let i = 0; i < args.length; i++) {
+    if (this.eval(args[i])) return true;
+  }
+  return false;
 }
 
 function xor(...args) {
-
+  return (this.eval(args[0]) ^ this.eval(args[1]));
 }
 
 function not(...args) {
-
+  return !this.eval(args);
 }
