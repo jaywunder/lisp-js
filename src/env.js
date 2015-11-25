@@ -37,6 +37,10 @@ export class Env {
     }
   }
 
+  run(context, code) {
+    return this.get(code[0]).apply(context, code.splice(1, code.length));
+  }
+
   eval(code) {
     for (let i = 0; i < code.length; i++) {
       if (Array.isArray(code[i]) && code[i-1] !== literal) {
@@ -44,21 +48,18 @@ export class Env {
       }
     }
     if (typeof code[0] === 'string')
-      return this.get(code[0]).apply(this, code.splice(1, code.length));
+      return this.run(this, code);
   }
-}
-
-function LITERAL(arg) {
-  return arg;
 }
 
 function print(...args) {
   let str = '';
   for (var i = 0; i < args.length; i++) {
     if (args[i] !== literal)
-      str = str + args[i].toString();
+      str = str + args[i] + ' ';
   }
   console.log(str);
+  return args;
 }
 
 function plus(...args) {
@@ -72,7 +73,7 @@ function plus(...args) {
 function minus(...args) {
   var num = args[0];
   for (var i = 1; i < args.length; i++)
-    num -= args[i];
+    num = num - args[i];
 
   return num;
 }
@@ -80,7 +81,7 @@ function minus(...args) {
 function times(...args) {
   var num = args[0];
   for (var i = 1; i < args.length; i++)
-    num *= args[i];
+    num = num * args[i];
 
   return num;
 }
@@ -88,11 +89,16 @@ function times(...args) {
 function divide(...args) {
   var num = args[0];
   for (var i = 1; i < args.length; i++)
-    num /= args[i];
+    num = num / args[i];
 
   return num;
 }
 
 function plusOne(...args) {
 
+  for (let i in args) {
+    args[i] = args[i] + 1;
+  }
+
+  return args;
 }
