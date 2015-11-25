@@ -16,7 +16,7 @@ Lists are wrapped in square brackets `[ ]`. They consist of space separated item
 **Objects**  
 Objects are wrapped in curly braces `{ }`.  They consist of keys every odd number and values every even number `{key0 value0 key1 value1}`
 
-**Strings**
+**Strings**  
 Strings are wrapped in quotes `' '` or `" "`.  Stuff in strings becomes a string.
 
 **Errors**  
