@@ -4,12 +4,12 @@
   "description": "Lisp is JS",
   "main": "index.js",
   "scripts": {
-    "test": "node ./index.js ./test/example.tut",
+    "test": "node ./index.js ./test/test.tut",
     "run": "node ./index.js"
   },
   "repository": {
     "type": "git",
-    "url": "nope"
+    "url": "https://github.com/jaywunder/stutter.js"
   },
   "keywords": [
     "lisp"

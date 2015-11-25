@@ -87,9 +87,10 @@ function expressionize(code, i) {
       str = str.slice(1, str.length);
       expr.push(literal, str);
 
-    } else if (token.match(/^-?\d*\.?\d*$/)) {
+    } else if (!!parseFloat(token)) {
+      if (DEBUG) console.log('found number');
 
-      expr.push(parseInt(token));
+      expr.push(parseFloat(token));
 
     }
     else {
