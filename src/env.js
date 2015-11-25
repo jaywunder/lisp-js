@@ -56,7 +56,7 @@ export class Env {
       '/': divide,
       'plus-one': plusOne,
       'if': __if__,
-      'elif': __elif__,
+      'elif': __if__,
       'else': __else__,
       '>': gt,
       '<': lt,
@@ -132,15 +132,14 @@ function plusOne(...args) {
 function __if__(...args) {
   if (this.eval(args[0])) {
     this.eval(args[1]);
+  } else if (args[2] == 'elif' || args[2] == 'else') {
+    this.run(this, args.splice(2, args.length));
   }
+
 }
 
 function __else__(...args) {
-
-}
-
-function __elif__(...args) {
-
+  this.eval(args[0]);
 }
 
 function gt(...args) {
