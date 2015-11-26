@@ -1,4 +1,4 @@
-(print nil)
+(print 'nil')
 
 (print 'hello world')
 
@@ -7,15 +7,19 @@
   omg woah
 })
 
-(print [
+(print 'array:' [
   1 2 3 4
 ])
 
-(print '1 + 1 = ' (+ 1 1 abc))
-(print '1 - 1 = ' (- 1 1))
-(print '2 * 2 = ' (* 2 2))
-(print '2 / 2 = ' (/ 2 2))
-(print (plus-one 0 1 2 3 abc))
+(print '1 + 1 + abc =' (+ 1 1 abc))
+(print '1 - 1 =' (- 1 1))
+(print '2 * 2 =' (* 2 2))
+(print '2 / 2 =' (/ 2 2))
+(print (++ 0 1 2 3 abc))
+
+(if (== 1 2)
+  (print '1 == 2 uh ohh!!')
+)
 
 (if (== 1 1)
   (print '1 == 1 yay!!')
@@ -55,4 +59,12 @@
 
 (if (not (== 1 2))
   (print 'not works!')
+)
+
+(if (== 1 2)
+  (print 'this will never run')
+elif (== 1 2)
+  (print 'this wont run either')
+else
+  (print '1 != 2, but 1 == 1 yay!')
 )

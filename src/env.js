@@ -1,6 +1,9 @@
-import { literal, nil } from './types.js';
+import {
+  Expression, Literal, Atom,
+  isLiteral, isAtom, isExpression
+} from './tree.js';
 
-const DEBUG = false;
+const DEBUG = true;
 
 export class Env {
   constructor(code) {
@@ -12,52 +15,30 @@ export class Env {
     this.makeIntrinsics();
   }
 
-  addIntrinsic(atom, fn) {
+  addIntrinsic(atom, value) {
     if (DEBUG) console.log('adding intrinsic: ' + atom);
-    this.intrinsics[atom] = fn;
+    this.intrinsics[atom] = value;
   }
 
-  addBinding(atom, fn) {
+  addBinding(atom, value) {
     if (DEBUG) console.log('adding binding: ' + atom);
-    this.bindings[atom] = fn;
-  }
-
-  get(atom) {
-    if (!this.intrinsics[atom] && !this.bindings[atom]){
-      return function(...args) {
-        // throw new Error(`${atom} isn't defined`);
-      };
-    } else {
-      return this.intrinsics[atom] || this.bindings[atom];
-    }
-  }
-
-  run(context, code) {
-    return this.get(code[0]).apply(context, code.splice(1, code.length));
-  }
-
-  eval(code) {
-    for (let i = 0; i < code.length; i++) {
-      if (Array.isArray(code[i]) && code[i-1] !== literal && !this.intrinsics[code[0]]) {
-        code[i] = this.eval(code[i]);
-      }
-    }
-    if (typeof code[0] === 'string')
-      return this.run(this, code);
+    this.bindings[atom] = value;
   }
 
   makeIntrinsics() {
     this.intrinsics = {
+      'let': _let,
+      'defun': defun,
       'print': print,
       '+': plus,
       '-': minus,
       '*': times,
       '÷': divide,
       '/': divide,
-      'plus-one': plusOne,
-      'if': __if__,
-      'elif': __if__,
-      'else': __else__,
+      '++': plusPlus,
+      'if': _if,
+      'elif': _if,
+      'else': _else,
       '>': gt,
       '<': lt,
       '>=': ge,
@@ -74,31 +55,86 @@ export class Env {
       'not': not
     };
   }
+
+  get(atom) {
+    // console.log('getting %s', atom);
+    // if (!this.intrinsics[atom] && !this.bindings[atom]){
+    //   return function() {
+    //     throw new Error(`${atom} isn't defined`);
+    //   };
+    // } else {
+      return this.intrinsics[atom] || this.bindings[atom];
+    // }
+  }
+
+  run(expr) {
+    let func = this.get(expr[0].name);
+    let args = expr.splice(1, expr.length);
+    return func.apply(this, args);
+  }
+
+  eval(token) {
+    if (isExpression(token)) {
+      let startIndex = isAtom(token[0]) ? 1 : 0;
+
+      for (var i = startIndex; i < token.length; i++){
+        token[i] = this.eval(token[i]);
+      }
+
+      if (isAtom(token[0])){
+        return this.run(token);
+      }
+    }
+
+    if (isAtom(token))
+      return this.get(token);
+
+    if (isLiteral(token))
+      return token.value;
+  }
+}
+
+export class Fn extends Atom {
+  constructor (scope, name, code) {
+    super(name, code);
+    this.scope = scope;
+  }
+}
+
+function _let(...args) {
+  for (var i = 0; i < args.length; i++) {
+    let atom = args[i].name;
+    let value = args[++i].value;
+    if (DEBUG) console.log(atom.name + ' = ' + value.value);
+    this.addBinding(atom, value);
+  }
+}
+
+function defun(...args) {
+  console.log('defining: ' + args);
 }
 
 function print(...args) {
   let str = '';
   for (var i = 0; i < args.length; i++) {
-    if (args[i] !== literal)
-      str = str + args[i] + ' ';
+    str = str + args[i] + ' ';
   }
   console.log(str);
-  return args;
+  return str;
 }
 
 function plus(...args) {
-  console.log('plusing!');
   var num = args[0];
   for (var i = 1; i < args.length; i++){
     num = num + args[i];
   }
-  return num;
+  return new Literal(num);
 }
 
 function minus(...args) {
   var num = args[0];
   for (var i = 1; i < args.length; i++) {
-    num = num - args[i];
+    num = num - args[i].value;
   }
 
   return num;
@@ -120,7 +156,7 @@ function divide(...args) {
   return num;
 }
 
-function plusOne(...args) {
+function plusPlus(...args) {
 
   for (let i in args) {
     args[i] = args[i] + 1;
@@ -129,16 +165,16 @@ function plusOne(...args) {
   return args;
 }
 
-function __if__(...args) {
+function _if(...args) {
   if (this.eval(args[0])) {
     this.eval(args[1]);
   } else if (args[2] == 'if' || args[2] == 'elif' || args[2] == 'else') {
-    this.run(this, args.splice(2, args.length));
+    this.run(args.splice(2, args.length));
   }
 
 }
 
-function __else__(...args) {
+function _else(...args) {
   this.eval(args[0]);
 }
 

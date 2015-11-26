@@ -6,10 +6,8 @@ var env = new Env();
 
 function main() {
   let code = parse(process.argv[2]);
-
   if (DEBUG) console.log(code);
   if (DEBUG) console.log(env);
-
   env.eval(code);
 }
 

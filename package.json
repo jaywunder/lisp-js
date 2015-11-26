@@ -4,7 +4,7 @@
   "description": "Lisp is JS",
   "main": "index.js",
   "scripts": {
-    "test": "node ./index.js ./test/test.tut",
+    "test": "node ./index.js ./test/ohBoyTest.tut",
     "run": "node ./index.js"
   },
   "repository": {
