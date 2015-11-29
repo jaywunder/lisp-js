@@ -1,0 +1,46 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'run',
+1 verbose cli   'run',
+1 verbose cli   './test/works.tut' ]
+2 info using npm@3.3.9
+3 info using node@v4.0.0
+4 verbose run-script [ 'prerun', 'run', 'postrun' ]
+5 info lifecycle lisp-js@0.0.1~prerun: lisp-js@0.0.1
+6 silly lifecycle lisp-js@0.0.1~prerun: no script for prerun, continuing
+7 info lifecycle lisp-js@0.0.1~run: lisp-js@0.0.1
+8 verbose lifecycle lisp-js@0.0.1~run: unsafe-perm in lifecycle true
+9 verbose lifecycle lisp-js@0.0.1~run: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/JacobWunder/Documents/lisp-js/node_modules/.bin:/usr/local/sbin:/usr/local/heroku/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/git/bin:/opt/ImageMagick/bin:/usr/games/bin:/Applications/Postgres.app/Contents/Versions/9.4/bin:/Users/JacobWunder/.nimble/bin:/Users/JacobWunder/racer/target/release
+10 verbose lifecycle lisp-js@0.0.1~run: CWD: /Users/JacobWunder/Documents/lisp-js
+11 silly lifecycle lisp-js@0.0.1~run: Args: [ '-c', 'node ./index.js "./test/works.tut"' ]
+12 silly lifecycle lisp-js@0.0.1~run: Returned: code: 1  signal: null
+13 info lifecycle lisp-js@0.0.1~run: Failed to exec run script
+14 verbose stack Error: lisp-js@0.0.1 run: `node ./index.js "./test/works.tut"`
+14 verbose stack Exit status 1
+14 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:233:16)
+14 verbose stack     at emitTwo (events.js:87:13)
+14 verbose stack     at EventEmitter.emit (events.js:172:7)
+14 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+14 verbose stack     at emitTwo (events.js:87:13)
+14 verbose stack     at ChildProcess.emit (events.js:172:7)
+14 verbose stack     at maybeClose (internal/child_process.js:817:16)
+14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+15 verbose pkgid lisp-js@0.0.1
+16 verbose cwd /Users/JacobWunder/Documents/lisp-js
+17 error Darwin 15.0.0
+18 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "run" "run" "./test/works.tut"
+19 error node v4.0.0
+20 error npm  v3.3.9
+21 error code ELIFECYCLE
+22 error lisp-js@0.0.1 run: `node ./index.js "./test/works.tut"`
+22 error Exit status 1
+23 error Failed at the lisp-js@0.0.1 run script 'node ./index.js "./test/works.tut"'.
+23 error This is most likely a problem with the lisp-js package,
+23 error not with npm itself.
+23 error Tell the author that this fails on your system:
+23 error     node ./index.js "./test/works.tut"
+23 error You can get their info via:
+23 error     npm owner ls lisp-js
+23 error There is likely additional logging output above.
+24 verbose exit [ 1, true ]

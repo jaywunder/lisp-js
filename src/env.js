@@ -1,6 +1,6 @@
 import {
   Expression, Literal, Atom,
-  isLiteral, isAtom, isExpression
+  isExpression, isLiteral, isAtom
 } from './tree.js';
 
 const DEBUG = true;
@@ -27,6 +27,7 @@ export class Env {
 
   makeIntrinsics() {
     this.intrinsics = {
+      'null': new Literal(null),
       'let': _let,
       'defun': defun,
       'print': print,
@@ -58,13 +59,11 @@ export class Env {
 
   get(atom) {
     // console.log('getting %s', atom);
-    // if (!this.intrinsics[atom] && !this.bindings[atom]){
-    //   return function() {
-    //     throw new Error(`${atom} isn't defined`);
-    //   };
-    // } else {
+    if (!this.intrinsics[atom] && !this.bindings[atom])
+      throw new Error(`${atom} isn't defined`);
+
+    else
       return this.intrinsics[atom] || this.bindings[atom];
-    // }
   }
 
   run(expr) {
@@ -76,10 +75,11 @@ export class Env {
   eval(token) {
     if (isExpression(token)) {
       let startIndex = isAtom(token[0]) ? 1 : 0;
+      let nonEvalFuncs = ['if', 'elif', 'else', 'defun'];
 
-      for (var i = startIndex; i < token.length; i++){
-        token[i] = this.eval(token[i]);
-      }
+      if (nonEvalFuncs.indexOf(token[0].name) < 0)
+        for (var i = startIndex; i < token.length; i++)
+          token[i] = this.eval(token[i]);
 
       if (isAtom(token[0])){
         return this.run(token);
@@ -128,15 +128,14 @@ function plus(...args) {
   for (var i = 1; i < args.length; i++){
     num = num + args[i];
   }
-  return new Literal(num);
+  return num;
 }
 
 function minus(...args) {
   var num = args[0];
   for (var i = 1; i < args.length; i++) {
-    num = num - args[i].value;
+    num = num - args[i];
   }
-
   return num;
 }
 
@@ -157,6 +156,8 @@ function divide(...args) {
 }
 
 function plusPlus(...args) {
+
+  console.log('PLUSPLUSING %s', args);
 
   for (let i in args) {
     args[i] = args[i] + 1;
@@ -224,22 +225,24 @@ function ne(...args) {
 
 function and(...args) {
   for (let i = 0; i < args.length; i++) {
-    if (!this.eval(args[i])) return false;
+    if (!args[i]) return false;
   }
   return true;
 }
 
 function or(...args) {
   for (let i = 0; i < args.length; i++) {
-    if (this.eval(args[i])) return true;
+    if (args[i]) return true;
   }
   return false;
 }
 
 function xor(...args) {
-  return (this.eval(args[0]) ^ this.eval(args[1]));
+  return (args[0] ^ args[1]);
 }
 
 function not(...args) {
+  if (args.length > 1)
+    throw new Error('"not" only takes one argument, instead got many');
   return !this.eval(args);
 }

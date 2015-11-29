@@ -1,1 +1,9 @@
 (print (+ 1 1 1 1 '1' 'abc'))
+
+(if (== 1 2)
+  (print 'uh oh')
+)
+
+(if (== 1 1)
+  (print 'yay!')
+)

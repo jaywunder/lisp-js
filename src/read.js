@@ -75,7 +75,7 @@ function expressionize(code, i) {
       str = str.slice(1, str.length);
       expr.push(new Literal(str));
 
-    } else if (!!parseFloat(token)) { // number
+    } else if (!!parseFloat(token) || token === '0') { // number
       if (DEBUG) console.log('found number');
 
       expr.push(new Literal(parseFloat(token)));

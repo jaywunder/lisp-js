@@ -2,8 +2,6 @@
 
 const debug = false;
 
-export const nil = Symbol('nil');
-
 export class Expression extends Array {
   constructor(...args) { super(...args); }
 }
@@ -14,17 +12,17 @@ export class Literal {
   }
 
   toString() {
-    return this.value.toString();
+    return this.value;
   }
 }
 
 export class Atom {
   constructor(name) {
-    this.name = name;
+    this.name = '' + name;
   }
 
   toString() {
-    return this.name.toString();
+    return this.name;
   }
 }
 
