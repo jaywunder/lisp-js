@@ -1,9 +1,13 @@
-(if (== 1 2)
-  (print 'this will never run')
-if (== 1 2)
-  (print 'this wont run either')
-else
-  (print '1 != 2, but 1 == 1 yay!')
+(let omg "woah" number 111 added (+ 1 1))
+
+(defun foo (bar baz)
+  (print "doing the foo")
+  (print "doing some more foo")
+  (print "and with variables" bar)
 )
+
+(foo 'BAR OMG' 'TESTING')
+
+(print omg (+ number 1) added)
 
 (print)

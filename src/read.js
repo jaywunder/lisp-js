@@ -2,7 +2,7 @@
 
 const DEBUG = false;
 
-import { literal, nil } from './types.js';
+import { Expression, Literal, Atom, nil } from './types.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -16,16 +16,9 @@ function read(filename) {
   return fs.readFileSync(filename, 'UTF-8');
 }
 
-/**
- * splits a code string into separate strings
- *
- * @param codeString string
- * @returns array of strings
- */
 function tokenize(codeString) {
   let splitStream = codeString.split(/([()\[\]'"{}#]|[^\s()\[\]'"{}#]+)/g);
 
-  let inString = false;
   for (let i in splitStream)
     if (splitStream[i].match(/\s+/) || splitStream[i] === '')
       splitStream.splice(i, 1);
@@ -33,70 +26,65 @@ function tokenize(codeString) {
   return splitStream;
 }
 
-/**
- * Turns the gramar into a tree
- *
- * @param
- * @returns
- */
 function expressionize(code, i) {
   let returnIndex = !!i;
 
-  let expr = [];
+  let expr = new Expression();
   for (i = i || 0; i < code.length; i++) {
     let token = code[i];
 
-    if (token === '(') {
+    if (token === '(') { // start of a new expression
       if (DEBUG) console.log('found open paren');
       var newExpr;
       [newExpr, i] = expressionize(code, i + 1);
-      expr.push(newExpr);
+      expr.push(Expression.from(newExpr));
 
-    } else if (token === ')') {
+    } else if (token === ')') { // end of an expression
 
       if (returnIndex)
         return [expr, i];
       else
         return expr;
 
-    } else if (token === '{') {
+    } else if (token === '{') { // object
 
       if (DEBUG) console.log('found start of object');
-      var obj = {};
+
+      let obj = {};
       while(code[++i] !== '}') {
-        obj[token] = code[++i];
+        obj[code[i]] = code[++i];
       }
-      expr.push(literal, obj);
+      expr.push(new Literal(obj));
 
-    } else if (token === '[') {
+    } else if (token === '[') { // arrays
 
-      var arr = [];
+      let arr = [];
       while(code[++i] !== ']') {
         arr.push(code[i]);
       }
-      expr.push(literal, arr);
+      expr.push(new Literal(arr));
 
-    } else if (token === '"' || token  === '\'') {
+    } else if (token.match(/^['"]/)) { // string
 
       if (DEBUG) console.log('found \' or "');
-      var str = '';
+      let str = '';
       while(!code[++i].match(/^['"]/)) {
-        if (DEBUG) console.log(code[i]);
+        if (DEBUG) console.log('> ' + code[i]);
         str = str + ' ' + code[i];
       }
       str = str.slice(1, str.length);
-      expr.push(literal, str);
+      expr.push(new Literal(str));
 
-    } else if (!!parseFloat(token)) {
+    } else if (!!parseFloat(token) || token === '0') { // number
       if (DEBUG) console.log('found number');
 
-      expr.push(parseFloat(token));
+      expr.push(new Literal(parseFloat(token)));
 
     }
     else {
 
-      if (DEBUG) console.log('found : ' + token);
-      expr.push(token);
+      if (DEBUG) console.log('found: ' + token);
+      expr.push(new Atom(token, undefined));
 
     }
   }
