@@ -1,5 +1,3 @@
-//TODO: rename tree.js to types.js
-
 const debug = false;
 
 export class Expression extends Array {

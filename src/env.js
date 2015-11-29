@@ -1,7 +1,7 @@
 import {
   Expression, Literal, Atom,
   isExpression, isLiteral, isAtom
-} from './tree.js';
+} from './types.js';
 
 const DEBUG = true;
 
@@ -75,6 +75,10 @@ export class Env {
   eval(token) {
     if (isExpression(token)) {
       let startIndex = isAtom(token[0]) ? 1 : 0;
+
+      // these are the functions that have to eval their own contents.
+      // Example: An "if" statement wouldn't want everything to run until the
+      // condition is known to be true.
       let nonEvalFuncs = ['if', 'elif', 'else', 'defun'];
 
       if (nonEvalFuncs.indexOf(token[0].name) < 0)

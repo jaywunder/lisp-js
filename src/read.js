@@ -2,7 +2,7 @@
 
 const DEBUG = false;
 
-import { Expression, Literal, Atom, nil } from './tree.js';
+import { Expression, Literal, Atom, nil } from './types.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
