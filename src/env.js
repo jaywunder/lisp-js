@@ -3,7 +3,7 @@ import {
   isExpression, isLiteral, isAtom
 } from './types.js';
 
-const DEBUG = true;
+const DEBUG = false;
 
 export class Env {
   constructor(code) {
@@ -79,7 +79,7 @@ export class Env {
       // these are the functions that have to eval their own contents.
       // Example: An "if" statement wouldn't want everything to run until the
       // condition is known to be true.
-      let nonEvalFuncs = ['if', 'elif', 'else', 'defun'];
+      let nonEvalFuncs = ['if', 'elif', 'else', 'defun', 'let'];
 
       if (nonEvalFuncs.indexOf(token[0].name) < 0)
         for (var i = startIndex; i < token.length; i++)
@@ -103,13 +103,19 @@ export class Fn extends Atom {
     super(name, code);
     this.scope = scope;
   }
+
+  eval(...args) {
+    scope.eval.call(scope, args);
+  }
 }
 
 function _let(...args) {
   for (var i = 0; i < args.length; i++) {
+    if (!isAtom(args[i])) throw new Error('can\'t bind to literal ' + args[i]);
+
     let atom = args[i].name;
-    let value = args[++i].value;
-    if (DEBUG) console.log(atom.name + ' = ' + value.value);
+    let value = this.eval(args[++i]);
+    if (DEBUG) console.log(atom + ' = ' + value);
     this.addBinding(atom, value);
   }
 }

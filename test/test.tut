@@ -1,4 +1,4 @@
-(let omg "woah" number 111)
+(let omg "woah" number 111 added (+ 1 1))
 
 (defun foo (bar)
   (print "doing the foo")
@@ -6,6 +6,6 @@
   (print "and with variables" bar)
 )
 
-(print omg number)
+(print omg (+ number 1) added)
 
 (print)
