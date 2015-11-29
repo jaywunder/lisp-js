@@ -1,17 +1,21 @@
 import {
   Expression, Literal, Atom,
-  isExpression, isLiteral, isAtom
+  isExpression, isLiteral, isAtom, isFunc
 } from './types.js';
 
 const DEBUG = false;
 
+///////////////////////
+// ENVIRONMENT CLASS //
+///////////////////////
 export class Env {
-  constructor(code) {
-    this.code = code;
+  constructor(options) {
+    options = options || {};
 
     this.bindings = {};
     this.intrinsics = {};
 
+    // we don't want to remake the intrinsics for every function
     this.makeIntrinsics();
   }
 
@@ -95,17 +99,48 @@ export class Env {
 
     if (isLiteral(token))
       return token.value;
+
+    if (isFunc(token)){
+      console.log('found a function!!');
+      return token.run();
+    }
   }
 }
 
-export class Fn extends Atom {
-  constructor (scope, name, code) {
-    super(name, code);
-    this.scope = scope;
+////////////////////
+// FUNCTION CLASS //
+////////////////////
+export class Func extends Env {
+  constructor (parent, expr) {
+    super();
+    this.parent = parent; // the parent scope
+    this.arguments = expr.splice(0, 1); // first token should be the arguments
+    this.expr = expr; // the rest of it should just be evaluated when called
   }
 
-  eval(...args) {
-    scope.eval.call(scope, args);
+  makeIntrinsics() {
+    this.intrinsics = {
+      'return': _return,
+    };
+  }
+
+  get(atom) {
+    let value = this.bindings[atom] || this.intrinsics[atom] || this.parent.get(atom);
+    if (!value)
+      throw new Error(`${atom} isn't defined`);
+    else
+      return value;
+  }
+
+  apply(scope, args) {
+    let argumentValues = [];
+    for (var i = 0; i < args.length; i++) {
+      argumentValues.push(this.arguments[0][i]);
+      argumentValues.push(new Literal(args[i]));
+    }
+
+    _let.apply(this, argumentValues);
+    this.eval(this.expr);
   }
 }
 
@@ -121,7 +156,9 @@ function _let(...args) {
 }
 
 function defun(...args) {
-  console.log('defining: ' + args);
+  let atom = args.splice(0, 1);
+  let value = new Func(this, args);
+  this.addBinding(atom, value);
 }
 
 function print(...args) {
@@ -131,6 +168,10 @@ function print(...args) {
   }
   console.log(str);
   return str;
+}
+
+function _return(...args) {
+  // this.
 }
 
 function plus(...args) {

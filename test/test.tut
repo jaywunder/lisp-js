@@ -1,10 +1,12 @@
 (let omg "woah" number 111 added (+ 1 1))
 
-(defun foo (bar)
+(defun foo (bar baz)
   (print "doing the foo")
   (print "doing some more foo")
   (print "and with variables" bar)
 )
+
+(foo 'BAR OMG' 'TESTING')
 
 (print omg (+ number 1) added)
 

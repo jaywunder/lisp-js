@@ -39,5 +39,11 @@ export function isAtom(thing) {
 export function isLiteral(thing) {
   if (debug) console.log('is [ %s ] a literal?', thing);
   if (thing === undefined) return true;
-  try {return thing.constructor.name === 'Literal';}catch(err) {}
+  try {return thing.constructor.name === 'Literal';} catch(err) {}
+}
+
+export function isFunc(thing) {
+  if (debug) console.log('is [ %s ] a function?', thing);
+  if (thing === undefined) return false;
+  return thing.constructor.name === 'Func';
 }
